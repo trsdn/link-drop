@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
+    <title>LinkDrop — Save clipboard links as files on macOS</title>
+    <meta name="description" content="LinkDrop is a tiny native macOS app that instantly saves URLs from your clipboard as clickable .url shortcut files. 224 KB, zero dependencies, built with SwiftUI.">
+    <meta name="keywords" content="macOS, URL shortcut, clipboard, link file, bookmark, productivity, SwiftUI, native app, webloc, .url, file manager, link organizer">
+    <meta name="author" content="trsdn">
+    <link rel="canonical" href="https://trsdn.github.io/link-drop/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="LinkDrop — Save clipboard links as files on macOS">
+    <meta property="og:description" content="Tiny native macOS utility that turns clipboard URLs into clickable shortcut files. 224 KB binary, 213 lines of Swift, zero dependencies.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://trsdn.github.io/link-drop/">
+    <meta property="og:image" content="https://trsdn.github.io/link-drop/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LinkDrop — Save clipboard links as files on macOS">
+    <meta name="twitter:description" content="Tiny native macOS utility that turns clipboard URLs into clickable shortcut files. 224 KB, zero dependencies.">
+    <meta name="twitter:image" content="https://trsdn.github.io/link-drop/og-image.png">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "LinkDrop",
+        "operatingSystem": "macOS 13+",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "A tiny native macOS app that saves URLs from your clipboard as clickable .url shortcut files.",
+        "downloadUrl": "https://github.com/trsdn/link-drop/releases/latest",
+        "softwareVersion": "1.0.0",
+        "fileSize": "1.3MB",
+        "author": {
+            "@type": "Person",
+            "name": "trsdn"
+        }
+    }
+    </script>
+
+    <style>
+        :root {
+            --blue: #2C5AA0;
+            --blue-light: #4A90D9;
+            --bg: #FAFBFC;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0d1117;
+                --text: #e6edf3;
+                --text-muted: #8b949e;
+                --card-bg: #161b22;
+                --border: #30363d;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+            color: white;
+        }
+
+        .hero img.icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .hero p.tagline {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 520px;
+            margin: 0 auto 32px;
+        }
+
+        .hero .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 14px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .hero .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .hero .cta svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .hero .meta {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.75;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Stats bar */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            padding: 40px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--blue-light);
+        }
+
+        .stat .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Problem / Solution */
+        .section {
+            padding: 60px 0;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .section p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            max-width: 640px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        @media (max-width: 700px) {
+            .two-col { grid-template-columns: 1fr; gap: 32px; }
+            .hero h1 { font-size: 2.2rem; }
+            .stats { gap: 24px; }
+        }
+
+        .screenshot {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        /* Steps */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 20px 0 40px;
+        }
+
+        @media (max-width: 700px) {
+            .steps { grid-template-columns: 1fr; }
+        }
+
+        .step {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .step .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--blue-light);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .step h3 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .step p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: none;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        @media (max-width: 700px) {
+            .features { grid-template-columns: 1fr; }
+        }
+
+        .feature {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .feature h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .feature p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* Install */
+        .install-code {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--blue-light);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        kbd {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: inherit;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+
+<section class="hero">
+    <img class="icon" src="icon-rounded.png" alt="LinkDrop app icon" width="120" height="120">
+    <h1>LinkDrop</h1>
+    <p class="tagline">Save links from your clipboard as files on macOS. Instantly.</p>
+    <a class="cta" href="https://github.com/trsdn/link-drop/releases/latest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download for macOS
+    </a>
+    <p class="meta">v1.0.0 &middot; macOS 13+ &middot; Apple Silicon &middot; 1.3 MB download</p>
+</section>
+
+<section class="stats">
+    <div class="stat">
+        <div class="number">224 KB</div>
+        <div class="label">Binary size</div>
+    </div>
+    <div class="stat">
+        <div class="number">213</div>
+        <div class="label">Lines of code</div>
+    </div>
+    <div class="stat">
+        <div class="number">0</div>
+        <div class="label">Dependencies</div>
+    </div>
+    <div class="stat">
+        <div class="number">~15 MB</div>
+        <div class="label">Memory usage</div>
+    </div>
+</section>
+
+<div class="container">
+
+    <section class="section">
+        <h2>How it works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="num">1</div>
+                <h3>Copy a URL</h3>
+                <p>Any link &mdash; a website, a file path, a deep link. Just copy it.</p>
+            </div>
+            <div class="step">
+                <div class="num">2</div>
+                <h3>Open LinkDrop</h3>
+                <p>The URL is auto-filled from your clipboard. Edit the name if you want.</p>
+            </div>
+            <div class="step">
+                <div class="num">3</div>
+                <h3><kbd>Cmd</kbd>+<kbd>Return</kbd></h3>
+                <p>A clickable <code>.url</code> file appears in your Downloads folder.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="two-col">
+            <div>
+                <h2>The problem</h2>
+                <p>You're deep in research, switching between browser tabs, Slack threads, and documents. You find a link you want to keep &mdash; but where do you put it?</p>
+                <p>macOS makes it surprisingly hard to save a URL as a file. There's no "Save Link" in Finder. You end up pasting URLs into notes or browser bookmarks you'll never find again.</p>
+                <p>If you organize things in folders, you want <strong>links as files</strong>. Clickable, movable, sortable. Just like everything else in Finder.</p>
+            </div>
+            <img class="screenshot" src="screenshot-main.png" alt="LinkDrop main window showing a URL being saved as a .url file" width="500" height="370" loading="lazy">
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Features</h2>
+        <div class="features">
+            <div class="feature">
+                <h3>Clipboard-first</h3>
+                <p>Auto-reads your clipboard on launch. No pasting needed.</p>
+            </div>
+            <div class="feature">
+                <h3>Smart naming</h3>
+                <p>Derives a readable filename from the URL. Edit it if you prefer something else.</p>
+            </div>
+            <div class="feature">
+                <h3>Configurable</h3>
+                <p>Change the save folder in Settings (<kbd>Cmd</kbd>+<kbd>,</kbd>). Defaults to ~/Downloads.</p>
+            </div>
+            <div class="feature">
+                <h3>Truly native</h3>
+                <p>Built with SwiftUI. No Electron, no web views, no runtime. Opens in milliseconds.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="two-col">
+            <img class="screenshot" src="screenshot-settings.png" alt="LinkDrop settings window for configuring the save folder" width="500" height="330" loading="lazy">
+            <div>
+                <h2>Build from source</h2>
+                <p>No Xcode project needed. Just the Swift compiler.</p>
+                <div class="install-code">
+                    git clone https://github.com/trsdn/link-drop.git<br>
+                    cd link-drop<br>
+                    make install
+                </div>
+                <p>That's it. The entire app is a single 213-line Swift file.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <p>
+        Made by <a href="https://github.com/trsdn">trsdn</a> &middot;
+        <a href="https://github.com/trsdn/link-drop">Source on GitHub</a> &middot;
+        <a href="https://github.com/trsdn/link-drop/releases/latest">Download</a> &middot;
+        MIT License
+    </p>
+</footer>
+
+</body>
+</html>
