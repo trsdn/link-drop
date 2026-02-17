@@ -1,0 +1,19 @@
+# Build artifacts
+LinkDrop.app/
+LinkDrop.iconset/
+*.png
+!screenshots/*.png
+icon.svg.png
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+
+# macOS
+.DS_Store
+*.swp
+
+# Scripts output
+/tmp/
