@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/binary-224%20KB-green?style=flat-square" alt="Size">
   <img src="https://img.shields.io/badge/code-213%20lines-orange?style=flat-square" alt="Lines of code">
   <img src="https://img.shields.io/badge/swift-SwiftUI-F05138?style=flat-square&logo=swift&logoColor=white" alt="Swift">
+  <a href="https://trsdn.github.io/link-drop/"><img src="https://img.shields.io/badge/website-trsdn.github.io%2Flink--drop-blue?style=flat-square&logo=github" alt="Website"></a>
 </p>
 
 ---
