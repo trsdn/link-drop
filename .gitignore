@@ -1,6 +1,11 @@
 # Build artifacts
 LinkDrop.app/
 LinkDrop.iconset/
+.release.env
+dist/
+release-build/
+*.dmg
+*.dmg.sha256
 *.png
 !screenshots/*.png
 icon.svg.png

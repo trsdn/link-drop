@@ -70,7 +70,7 @@ No background processes. No auto-updates. No telemetry. Opens instantly, does it
 
 ### Download
 
-Grab the latest `.app` from [Releases](https://github.com/trsdn/link-drop/releases/latest), unzip, and drag to `/Applications`.
+Grab the latest signed DMG from [Releases](https://github.com/trsdn/link-drop/releases/latest), open it, and drag LinkDrop to `/Applications`.
 
 ### Build from Source
 
@@ -82,6 +82,17 @@ cd link-drop
 make build
 make install  # copies to /Applications
 ```
+
+### Signed DMG Release
+
+Create a local release config from `.release.env.example`, then run:
+
+```bash
+scripts/release_macos.sh
+```
+
+The GitHub release workflow builds a signed, notarized DMG on `v*` tags. Configure these repository secrets first:
+`MACOS_CERTIFICATE`, `MACOS_CERTIFICATE_PWD`, `APPLE_ID`, `APPLE_TEAM_ID`, and `APPLE_APP_PASSWORD`.
 
 ## How .url Files Work
 
